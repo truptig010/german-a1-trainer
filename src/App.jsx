@@ -76,24 +76,28 @@ function App() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+       minHeight: "100vh",
         display: "flex",
+        padding: "20px",   // 🔥 adds spacing from edges
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#f4f6f9",
         fontFamily: "sans-serif",
       }}
     >
-      <div
-        style={{
-          width: "400px",
-          background: "white",
-          padding: "30px",
-          borderRadius: "16px",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-          textAlign: "center",
-        }}
-      >
+    <div
+      style={{
+        width: "400px",
+        maxWidth: "90%",          // 🔥 important for mobile
+        background: "white",
+        padding: "30px",
+        borderRadius: "16px",
+        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+        textAlign: "center",
+        color: "#111",            // 🔥 force text color
+      }}
+    >
+
         <h2>German A1 Trainer</h2>
 
         {/* Chapter Selector */}
@@ -140,7 +144,8 @@ function App() {
             </div>
 
             {/* Word (ONLY noun shown) */}
-            <h3 style={{ marginBottom: "20px" }}>              
+            <h3 style={{ marginBottom: "20px" }}>
+              
               {words[index] && formatGerman(words[index].word)}
             </h3>
 
