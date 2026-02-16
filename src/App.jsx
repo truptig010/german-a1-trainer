@@ -5,26 +5,52 @@ function App() {
   const chapterNames = Object.keys(chapters);
 
   const [currentChapter, setCurrentChapter] = useState(chapterNames[0]);
+  const [shuffledWords, setShuffledWords] = useState([]);
   const [words, setWords] = useState([]);
+  const [batchStart, setBatchStart] = useState(0);
+
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState("");
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
 
-  // Load 20 random questions
+  // ✅ Fisher-Yates Shuffle
+  const shuffleArray = (array) => {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  };
+
+  // ✅ When chapter changes → shuffle full chapter
   useEffect(() => {
-    const shuffled = [...chapters[currentChapter]].sort(
-      () => Math.random() - 0.5
-    );
+    const shuffled = shuffleArray(chapters[currentChapter]);
+    setShuffledWords(shuffled);
+    setBatchStart(0);
+  }, [currentChapter]);
 
-    const quizSet = shuffled.slice(0, 20);
+  // ✅ Load batch of 20 whenever shuffledWords or batchStart changes
+  useEffect(() => {
+    if (shuffledWords.length === 0) return;
 
-    setWords(quizSet);
+    const nextBatch = shuffledWords.slice(batchStart, batchStart + 20);
+
+    // If remaining words < 20 → reshuffle and restart
+    if (nextBatch.length < 20) {
+      const reshuffled = shuffleArray(chapters[currentChapter]);
+      setShuffledWords(reshuffled);
+      setBatchStart(0);
+      return;
+    }
+
+    setWords(nextBatch);
     setIndex(0);
     setSelected("");
     setScore(0);
     setFinished(false);
-  }, [currentChapter]);
+  }, [shuffledWords, batchStart]);
 
   const checkAnswer = (answer) => {
     if (selected) return;
@@ -35,17 +61,17 @@ function App() {
       setScore((prev) => prev + 1);
     }
   };
-  const formatGerman = (text) => {
-  return text
-    .replace(/ae/g, "ä")
-    .replace(/oe/g, "ö")
-    .replace(/ue/g, "ü")
-    .replace(/Ae/g, "Ä")
-    .replace(/Oe/g, "Ö")
-    .replace(/Ue/g, "Ü")
-    .replace(/ss/g, "ß");
-};
 
+  const formatGerman = (text) => {
+    return text
+      .replace(/ae/g, "ä")
+      .replace(/oe/g, "ö")
+      .replace(/ue/g, "ü")
+      .replace(/Ae/g, "Ä")
+      .replace(/Oe/g, "Ö")
+      .replace(/Ue/g, "Ü")
+      .replace(/ss/g, "ß");
+  };
 
   const nextWord = () => {
     if (index + 1 < words.length) {
@@ -56,50 +82,41 @@ function App() {
     }
   };
 
+  // ✅ Move to next batch
   const resetQuiz = () => {
-    const shuffled = [...chapters[currentChapter]].sort(
-      () => Math.random() - 0.5
-    );
-
-    const quizSet = shuffled.slice(0, 20);
-
-    setWords(quizSet);
-    setIndex(0);
-    setSelected("");
-    setScore(0);
-    setFinished(false);
+    setBatchStart((prev) => prev + 20);
   };
+
+  const totalWordsInChapter = chapters[currentChapter].length;
+  const totalRounds = Math.ceil(totalWordsInChapter / 20);
+  const currentRound = Math.floor(batchStart / 20) + 1;
 
   const progressPercent =
     words.length > 0 ? ((index + 1) / words.length) * 100 : 0;
 
   return (
     <div
-    style={{
-    minHeight: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f4f6f9",
-    fontFamily: "sans-serif",
-    padding: "20px",
-    color: "#111",   // 🔥 ADD THIS LINE
-  }}
-    >
-    <div
       style={{
-        width: "400px",
-        maxWidth: "90%",          // 🔥 important for mobile
-        background: "white",
-        padding: "30px",
-        borderRadius: "16px",
-        boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-        textAlign: "center",
-        color: "#111",            // 🔥 force text color
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
+        backgroundColor: "#f4f6f9",
       }}
     >
-
-        <h2 style={{ color: "#111" }}>German A1 Trainer</h2>
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "400px",
+          background: "white",
+          padding: "30px",
+          borderRadius: "16px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+          textAlign: "center",
+        }}
+      >
+        <h2>German A1 Trainer</h2>
 
         {/* Chapter Selector */}
         <select
@@ -117,6 +134,11 @@ function App() {
             </option>
           ))}
         </select>
+
+        {/* Round Indicator */}
+        <div style={{ fontSize: "14px", marginBottom: "10px" }}>
+          Round {currentRound} / {totalRounds}
+        </div>
 
         {!finished ? (
           <>
@@ -144,11 +166,23 @@ function App() {
               />
             </div>
 
-            {/* Word (ONLY noun shown) */}
-            <h3 style={{ marginBottom: "20px", color: "#111" }}>
-              
+            {/* Word */}
+          <h3 style={{ marginBottom: "5px" }}>
               {words[index] && formatGerman(words[index].word)}
             </h3>
+
+            {words[index] && (
+              <div style={{ marginBottom: "20px", fontSize: "14px", color: "#555" }}>
+                <div>
+                 {words[index].english}
+                </div>
+                <div>
+                  <strong>Plural:</strong>{" "}
+                  {formatGerman(words[index].plural)}
+                </div>
+              </div>
+            )}
+
 
             {/* Article Buttons */}
             <div>
@@ -185,12 +219,10 @@ function App() {
               })}
             </div>
 
-            {/* Score */}
             <p style={{ marginTop: "15px", fontSize: "14px" }}>
               Score: {score}
             </p>
 
-            {/* Next Button */}
             <button
               onClick={nextWord}
               disabled={!selected}
@@ -227,7 +259,7 @@ function App() {
                 width: "100%",
               }}
             >
-              Start New 20 Quiz
+              Start Next Round
             </button>
           </>
         )}
@@ -235,6 +267,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
