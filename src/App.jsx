@@ -75,15 +75,16 @@ function App() {
 
   return (
     <div
-      style={{
-       minHeight: "100vh",
-        display: "flex",
-        padding: "20px",   // 🔥 adds spacing from edges
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f4f6f9",
-        fontFamily: "sans-serif",
-      }}
+    style={{
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f4f6f9",
+    fontFamily: "sans-serif",
+    padding: "20px",
+    color: "#111",   // 🔥 ADD THIS LINE
+  }}
     >
     <div
       style={{
@@ -98,7 +99,7 @@ function App() {
       }}
     >
 
-        <h2>German A1 Trainer</h2>
+        <h2 style={{ color: "#111" }}>German A1 Trainer</h2>
 
         {/* Chapter Selector */}
         <select
@@ -144,7 +145,7 @@ function App() {
             </div>
 
             {/* Word (ONLY noun shown) */}
-            <h3 style={{ marginBottom: "20px" }}>
+            <h3 style={{ marginBottom: "20px", color: "#111" }}>
               
               {words[index] && formatGerman(words[index].word)}
             </h3>
