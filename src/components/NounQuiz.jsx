@@ -141,12 +141,14 @@ function NounQuiz() {
     fontSize: "26px",
     fontWeight: "600",
     color: "#1976d2"
-  }}>{words[index] && formatGerman(words[index].word)}</h3>
+  }}>{words[index] && formatGerman(words[index].word)} ({words[index]?.pronunciation}) </h3>
+
+
 
 
         {words[index] && (
           <div style={{ marginBottom: "20px", fontSize: "14px", color: "#555" }}>
-            <div><strong> {words[index]?.pronunciation}</strong>  : {words[index].english}</div>
+            <div>{words[index].english}</div>
 
             <div>
               <strong>Plural:</strong> {formatGerman(words[index].plural)}

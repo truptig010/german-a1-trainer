@@ -94,7 +94,7 @@ export default function VerbMatchQuiz() {
                 cursor: "pointer"
               }}
             >
-              {v.infinitive}
+              {v.infinitive} ({v.pronunciation})
             </button>
           );
         })}
@@ -126,7 +126,7 @@ export default function VerbMatchQuiz() {
                 cursor: "pointer"
               }}
             >
-              {eng}
+              {eng} {}
             </button>
           );
         })}
