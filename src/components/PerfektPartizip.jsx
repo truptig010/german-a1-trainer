@@ -41,11 +41,8 @@ export default function PerfektPartizip() {
     >
       {/* Verb Info */}
       <h3 style={{ marginBottom: "10px", color: "#1976d2" }}>
-        {currentVerb.infinitive} – {currentVerb.english}
-      </h3>
-      <p style={{ fontSize: "0.9rem", color: "#666", marginBottom: "15px" }}>
-        Pronunciation: {currentVerb.pronunciation}
-      </p>
+        {currentVerb.infinitive} ({currentVerb.pronunciation}) - {currentVerb.english}
+      </h3>      
 
       {/* Input Box */}
       <input
@@ -97,7 +94,7 @@ export default function PerfektPartizip() {
                 fontWeight: "500",
               }}
             >
-              Correct: {currentVerb.perfekt}
+              Correct: {currentVerb.perfekt} ({currentVerb.pronunciation_perfekt})
             </p>
           </div>
         )}

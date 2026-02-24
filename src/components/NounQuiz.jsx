@@ -33,7 +33,7 @@ function NounQuiz() {
 
     const nextBatch = shuffledWords.slice(batchStart, batchStart + 20);
 
-    if (nextBatch.length < 20) {
+    if (nextBatch.length === 0) {
       const reshuffled = shuffleArray(chapters[currentChapter]);
       setShuffledWords(reshuffled);
       setBatchStart(0);
@@ -151,7 +151,7 @@ function NounQuiz() {
             <div>{words[index].english}</div>
 
             <div>
-              <strong>Plural:</strong> {formatGerman(words[index].plural)}
+              <strong>Plural:</strong> {formatGerman(words[index].plural)} ({words[index].pronunciation_plural})
 
             </div>
 
